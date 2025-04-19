@@ -71,7 +71,7 @@
 
   <div class="btn-group">
     <button class="btn-cancel" onclick="cancelForm()">İptal</button>
-    <button class="btn-submit" onclick="submitForm()">Güncelle</button>
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()">Güncelle</button>
   </div>
 
   <script>
@@ -92,7 +92,8 @@
         yerler: params.get("yerler") ? JSON.parse(params.get("yerler")) : [],
         lab: params.get("lab") || "",
         lablar: params.get("lablar") ? JSON.parse(params.get("lablar")) : [],
-        format: params.get("format") || "pdf"
+        format: params.get("format") || "pdf",
+        submitText: params.get("submitText") || "Güncelle"
       };
     }
 
@@ -123,6 +124,7 @@
       document.getElementById("saat").value = veri.saat;
       document.getElementById("miktar").value = veri.miktar;
       document.getElementById("format").value = veri.format;
+      document.getElementById("submitBtn").textContent = veri.submitText;
 
       // Beton Sınıfı
       const sinifSelect = document.getElementById("sinif");
