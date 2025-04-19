@@ -87,7 +87,9 @@
 
     window.onload = function () {
       const veri = getQueryParams();
-
+      const today = new Date().toISOString().split("T")[0];
+      
+      document.getElementById("tarih").setAttribute("min", today);
       document.getElementById("form-title").textContent = veri.title;
       document.getElementById("index").value = veri.index;
       document.getElementById("tarih").value = veri.tarih;
