@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Beton Dökümü Randevu Talep Formu</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      padding: 20px;
+    }
+    label {
+      margin-top: 15px;
+      display: block;
+      font-weight: bold;
+    }
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    button {
+      padding: 10px;
+      border: none;
+      width: 48%;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn-cancel { background-color: #ccc; }
+    .btn-submit { background-color: #28a745; color: white; }
+  </style>
+</head>
+<body>
+  <h3>Beton Dökümü Randevu Talep Formu</h3>
+
+  <label for="yibf">YİBF Numarası</label>
+  <select id="yibf"></select>
+
+  <label for="tarih">Beton Döküm Tarihi</label>
+  <input type="date" id="tarih" />
+
+  <label for="saat">Beton Döküm Saati</label>
+  <input type="time" id="saat" />
+
+  <label for="sinif">Beton Sınıfı</label>
+  <select id="sinif"></select>
+
+  <label for="miktar">Beton Miktarı (m³)</label>
+  <input type="number" id="miktar" max="5000" />
+
+  <label for="yer">Beton Döküm Yeri</label>
+  <select id="yer"></select>
+
+  <label for="lab">Laboratuvar Firması</label>
+  <select id="lab"></select>
+
+  <label for="format">Evrak Formatı</label>
+  <select id="format">
+    <option value="pdf">pdf</option>
+    <option value="docx">word</option>
+  </select>
+
+  <div class="btn-group">
+    <button class="btn-cancel" onclick="cancelForm()">İptal</button>
+    <button class="btn-submit" onclick="submitForm()">Güncelle</button>
+  </div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
+
+    function getQueryParams() {
+      const params = new URLSearchParams(window.location.search);
+      return {
+        yibf: params.get("yibf") || "",
+        yibfList: params.get("yibfList") ? JSON.parse(params.get("yibfList")) : [],
+        tarih: params.get("tarih") || "",
+        saat: params.get("saat") || "",
+        miktar: params.get("miktar") || "",
+        sinif: params.get("sinif") || "",
+        siniflar: params.get("siniflar") ? JSON.parse(params.get("siniflar")) : [],
+        yer: params.get("yer") || "",
+        yerler: params.get("yerler") ? JSON.parse(params.get("yerler")) : [],
+        lab: params.get("lab") || "",
+        lablar: params.get("lablar") ? JSON.parse(params.get("lablar")) : [],
+        format: params.get("format") || "pdf"
+      };
+    }
+
+    window.onload = function () {
+      const veri = getQueryParams();
+
+      // YİBF Dropdown
+      const yibfSelect = document.getElementById("yibf");
+      if (veri.yibfList.length === 1) {
+        const opt = document.createElement("option");
+        opt.value = veri.yibfList[0];
+        opt.text = veri.yibfList[0];
+        opt.selected = true;
+        yibfSelect.appendChild(opt);
+        yibfSelect.disabled = true;
+      } else {
+        veri.yibfList.forEach(y => {
+          const opt = document.createElement("option");
+          opt.value = y;
+          opt.text = y;
+          if (y === veri.yibf) opt.selected = true;
+          yibfSelect.appendChild(opt);
+        });
+      }
+
+      // Tarih ve Saat
+      document.getElementById("tarih").value = veri.tarih;
+      document.getElementById("saat").value = veri.saat;
+      document.getElementById("miktar").value = veri.miktar;
+      document.getElementById("format").value = veri.format;
+
+      // Beton Sınıfı
+      const sinifSelect = document.getElementById("sinif");
+      veri.siniflar.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.text = s;
+        if (s === veri.sinif) opt.selected = true;
+        sinifSelect.appendChild(opt);
+      });
+
+      // Döküm Yeri
+      const yerSelect = document.getElementById("yer");
+      veri.yerler.forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.text = y;
+        if (y === veri.yer) opt.selected = true;
+        yerSelect.appendChild(opt);
+      });
+
+      // Laboratuvar
+      const labSelect = document.getElementById("lab");
+      veri.lablar.forEach(l => {
+        const opt = document.createElement("option");
+        opt.value = l;
+        opt.text = l;
+        if (l === veri.lab) opt.selected = true;
+        labSelect.appendChild(opt);
+      });
+    };
+
+    function cancelForm() {
+      tg.close();
+    }
+
+    function submitForm() {
+      const miktar = parseFloat(document.getElementById("miktar").value);
+      if (miktar > 5000) {
+        alert("Beton miktarı 5000'den fazla olamaz.");
+        return;
+      }
+
+      const veri = {
+        yibf: document.getElementById("yibf").value,
+        tarih: document.getElementById("tarih").value,
+        saat: document.getElementById("saat").value,
+        sinif: document.getElementById("sinif").value,
+        miktar: miktar,
+        yer: document.getElementById("yer").value,
+        lab: document.getElementById("lab").value,
+        format: document.getElementById("format").value
+      };
+
+      tg.sendData(JSON.stringify(veri));
+      tg.close();
+    }
+  </script>
+</body>
+</html>
