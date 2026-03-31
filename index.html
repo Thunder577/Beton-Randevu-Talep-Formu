@@ -64,7 +64,7 @@
   <input type="number" id="miktar" max="5000" />
 
   <label for="dayanim">7 Günlük Beton Basınç Dayanım Oranı Yüzdesi (%)</label>
-  <input type="number" id="dayanim" min="40" max="80" step="1" />
+  <input type="number" id="dayanim" min="40" max="80" step="1" required />
 
   <div class="btn-group">
     <button class="btn-cancel" onclick="cancelForm()">İptal</button>
@@ -115,6 +115,16 @@
       if (veri.sinif) {
         sinifSelect.value = veri.sinif;
       }
+
+      document.getElementById("dayanim").addEventListener("input", function () {
+  const val = parseInt(this.value);
+
+  if (val < 40 || val > 80) {
+    this.setCustomValidity("Değer 40 ile 80 arasında olmalıdır");
+  } else {
+    this.setCustomValidity("");
+  }
+});
     };
 
     function cancelForm() {
@@ -129,13 +139,13 @@
         return;
       }
 
-      const dayanimVal = parseInt(dayanim);
-      if (dayanimVal < 40 || dayanimVal > 80) {
-        alert("Dayanım oranı %40 ile %80 arasında olmalıdır.");
-        return;
-      }
+const dayanim = parseInt(document.getElementById("dayanim").value);
 
-      const veri = {
+if (isNaN(dayanim) || dayanim < 40 || dayanim > 80) {
+  alert("Dayanım oranı %40 ile %80 arasında olmalıdır.");
+  return;
+}
+            const veri = {
         index: document.getElementById("index").value,
         tarih: document.getElementById("tarih").value,
         saat: document.getElementById("saat").value,
