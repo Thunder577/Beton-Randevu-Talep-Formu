@@ -121,12 +121,7 @@
     }
 
     function submitForm() {
-      const dayanim = document.getElementById("dayanim").value;
-      if (!tarih || !saat || !miktar || !dayanim) {
-        alert("Lütfen tüm alanları doldurun.");
-        return;
-      }
-
+      
       const miktar = parseFloat(document.getElementById("miktar").value);
       if (miktar > 5000) {
         alert("Beton miktarı 5000'den fazla olamaz.");
