@@ -61,7 +61,7 @@
   </select>
 
   <label for="miktar">Beton Miktarı (m³)</label>
-  <input type="number" id="miktar" max="5000" />
+  <input type="number" id="miktar" min="1" max="5000" step="1" required />
 
   <label for="dayanim">7 Günlük Beton Basınç Dayanım Oranı Yüzdesi (%)</label>
   <input type="number" id="dayanim" min="40" max="80" step="1" required />
@@ -120,11 +120,22 @@
   const val = parseInt(this.value);
 
   if (val < 40 || val > 80) {
-    this.setCustomValidity("Değer 40 ile 80 arasında olmalıdır");
+    this.setCustomValidity("Değer %40 ile %80 arasında olabilir!");
   } else {
     this.setCustomValidity("");
   }
 });
+
+      document.getElementById("miktar").addEventListener("input", function () {
+  const val = parseInt(this.value);
+
+  if (val < 1 || val > 5000) {
+    this.setCustomValidity("Değer 1 ile 5000 arasında olabilir!");
+  } else {
+    this.setCustomValidity("");
+  }
+});
+      
     };
 
     function cancelForm() {
@@ -134,15 +145,15 @@
     function submitForm() {
       
       const miktar = parseFloat(document.getElementById("miktar").value);
-      if (miktar > 5000) {
-        alert("Beton miktarı 5000'den fazla olamaz.");
+      if (isNaN(miktar) || miktar < 1 || miktar > 5000) {
+        alert("Beton miktarı 1 ile 5000 arasında olabilir!");
         return;
       }
 
 const dayanim = parseInt(document.getElementById("dayanim").value);
 
 if (isNaN(dayanim) || dayanim < 40 || dayanim > 80) {
-  alert("Dayanım oranı %40 ile %80 arasında olmalıdır.");
+  alert("Dayanım oranı %40 ile %80 arasında olabilir!");
   return;
 }
             const veri = {
