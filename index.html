@@ -63,6 +63,9 @@
   <label for="miktar">Beton Miktarı (m³)</label>
   <input type="number" id="miktar" max="5000" />
 
+  <label for="dayanim">Dayanım Oranı Yüzdesi (%)</label>
+  <input type="number" id="dayanim" min="40" max="80" step="1" />
+
   <div class="btn-group">
     <button class="btn-cancel" onclick="cancelForm()">İptal</button>
     <button class="btn-submit" id="submitBtn" onclick="submitForm()">Güncelle</button>
@@ -80,6 +83,7 @@
         saat: params.get("saat") || "",
         miktar: params.get("miktar") || "",
         sinif: params.get("sinif") || "",
+        dayanim: params.get("dayanim") || "",
         submitText: params.get("submitText") || "Güncelle",
         title: params.get("title") || "Beton Dökümü Randevu Talep Formu"
       };
@@ -117,9 +121,21 @@
     }
 
     function submitForm() {
+      const dayanim = document.getElementById("dayanim").value;
+      if (!tarih || !saat || !miktar || !dayanim) {
+        alert("Lütfen tüm alanları doldurun.");
+        return;
+      }
+
       const miktar = parseFloat(document.getElementById("miktar").value);
       if (miktar > 5000) {
         alert("Beton miktarı 5000'den fazla olamaz.");
+        return;
+      }
+
+      const dayanimVal = parseInt(dayanim);
+      if (dayanimVal < 40 || dayanimVal > 80) {
+        alert("Dayanım oranı %40 ile %80 arasında olmalıdır.");
         return;
       }
 
@@ -128,7 +144,8 @@
         tarih: document.getElementById("tarih").value,
         saat: document.getElementById("saat").value,
         sinif: document.getElementById("sinif").value,
-        miktar: document.getElementById("miktar").value
+        miktar: document.getElementById("miktar").value,
+        dayanim: document.getElementById("dayanim").value
       };
 
       tg.sendData(JSON.stringify(veri));
